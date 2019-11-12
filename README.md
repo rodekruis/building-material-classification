@@ -18,7 +18,7 @@ Mapillary employs computer vision models to detect specific objects in street-le
 
 We thus selected only the images in which one or more buildings were detected with high accuracy (>80%) and good resolution (>1% of the picture). 3233 images satisfied the selection criteria in the study area. From these images, we selected only the segments in which buildings were detected.
 
-We then randomly chose 1000 images and have them labeled on Amazon Mechanical Turk, a crowdsourcing website for businesses. The labels referred to the buildings’ wall material and were chosen to be:
+We then randomly chose 1000 images and have them labeled. The labels referred to the buildings’ wall material and were chosen to be:
 1. Concrete
 2. Bricks
 3. Corrugated metal sheet
