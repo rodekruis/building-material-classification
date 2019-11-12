@@ -41,12 +41,14 @@ Each image was labelled independently by 3 different people and we selected thos
 | Thatch / grass | 3  |
 | Unclear / none of the above | 84  |
 
-## Model
+## Model (work in progress)
 
-Given the results of the labelling task, we developed a model to classify a building as either made of bricks or concrete; we did not have sufficient data to include other materials. We chose to start with Convolutional Neural Networks (CNN), as such models represent the state-of-the-art in image classification. In particular, given the limited size of our training dataset, we used a pre-trained CNN, [ResNet50](https://arxiv.org/abs/1512.03385), to extract high-level features from the images, and trained a 2-layer fully-connected network on top of it. The parameters of the underlying ResNet50 model were kept fixed, i.e. the model was not re-trained.
-We used the [keras framework](https://keras.io/) from image pre-processing and model building/training. In particular, we used data augmentation routines to extend the training dataset, by applying rotations, reflections and translations to the original images. We chose Adam as optimization algorithm, with a fixed learning rate of 1e-3, and we trained the model with mini-batches of 8 images each. The model reached a top accuracy (recall) of about 85% () after about 50 epochs.
+Given the results of the labelling task, we develop a model to classify a building as either made of bricks or concrete; we do not have sufficient data to include other material classes. We start with a pre-trained Convolutional Neural Network (CNN), namely [ResNet50](https://arxiv.org/abs/1512.03385), to extract high-level features from the images, and train a 2-layer fully-connected network on top of it. The parameters of the underlying ResNet50 model are kept fixed, i.e. the model is not re-trained.
+We use the [keras framework](https://keras.io/) for image pre-processing and model building/training. In particular, we use data augmentation routines to extend the training dataset, by applying rotations, reflections and translations to the original images.
 
-
-
-
+## Instructions
+1. Install required packages: `pip install -r requirements.txt`
+2. Get image dataset and class labels (write to jmargutti@redcross.nl)
+3. Prepare dataset for the model: `prepare_dataset.py` 
+3. Train and test the model: `train_test_model.py` 
 
