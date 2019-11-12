@@ -42,7 +42,7 @@ Each image was labelled independently by 3 different people and we selected thos
 ## Model (work in progress)
 
 Given the results of the labelling task, we develop a model to classify a building as either made of bricks or concrete; we do not have sufficient data to include other material classes. We start with a pre-trained Convolutional Neural Network (CNN), namely [ResNet50](https://arxiv.org/abs/1512.03385), to extract high-level features from the images, and train a 2-layer fully-connected network on top of it. The parameters of the underlying ResNet50 model are kept fixed, i.e. the model is not re-trained.
-We use the [keras framework](https://keras.io/) for image pre-processing and model building/training. In particular, we use data augmentation routines to extend the training dataset, by applying rotations, reflections and translations to the original images.
+We use the [keras framework](https://keras.io/) for image pre-processing and model building/training.
 
 ## Instructions
 1. Install required packages: `pip install -r requirements.txt`
