@@ -27,7 +27,8 @@ We then randomly chose 1000 images and have them labeled. The labels referred to
 6. Wood
 7. Thatch / grass
 8. Unclear / none of the above
-Each image was labelled independently by 3 different people and we selected those images where 2 out of 3 labels agreed (889 out of 1000). We observe most of the buildings being labelled as either concrete or bricks. See this tab for the full results
+
+Each image was labelled independently by 3 different people and we selected those images where 2 out of 3 labels agreed (889 out of 1000). We observe most of the buildings being labelled as either concrete or bricks. See this table for the full results:
 
 | Label (Building Material) | Counts |
 | ------------- | ------------- |
