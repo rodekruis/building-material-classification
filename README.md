@@ -4,9 +4,7 @@ Building material classification from Mapillary street-view images
 ## Introduction
 In order to accurately predict the damage that a natural disaster would inflict on a building, detailed information on the building’s structure and composition material(s) is required. While all such information is virtually impossible to collect on a country level, since it would require complete, accessible and up-to-date cadaster records, an estimate of the building’s material can be obtained by simple visual inspection and is thus feasible to use.
 
-While additional features of the building (e.g. foundation depth) will affect the likelihood of damage, we can assume that this latter can be factorized in the contribution of each building feature and that these contributions are to first order independent to each other. Working with such approximation, we can still give a meaningful approximation of the damage likelihood knowing exclusively the building material.
-
-In this repo, we present a model to classify building material from street-level images of buildings, which enables quick extraction of this information on large areas. In particular, we used [Mapillary](https://www.mapillary.com/app/), a service for sharing crowdsourced geotagged photos, as a source of street-level images.
+Here we present a model to classify building material from street-level images of buildings, which enables quick extraction of this information on large areas. In particular, we used [Mapillary](https://www.mapillary.com/app/), a service for sharing crowdsourced geotagged photos, as a source of street-level images.
 
 ## Data
 As a starting point, we chose an area of about 50 km2 in the south-east of Blantyre, southern Malawi, in which a total of 90 km of roads have been captured, corresponding to about 13700 street-level images. 
