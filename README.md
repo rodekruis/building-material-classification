@@ -16,7 +16,7 @@ Mapillary employs computer vision models to detect specific objects in street-le
 * The segment of the image corresponding to those objects
 * A probability of the object being accurately detected 
 
-We thus selected only the images in which one or more buildings were detected with high accuracy (>80%) and good resolution (>1% of the picture). 3233 images satisfied the selection criteria in the study area. From these images, we selected only the segments in which buildings were detected.
+We thus selected only the images in which one or more buildings were detected with high accuracy (>80%) and good resolution (>1% of the picture). 3233 images satisfied the selection criteria in the study area. From these images, we selected only the area in which buildings were detected, by cropping each image around the corresponding segment(s).
 
 We then randomly chose 1000 images and have them labeled. The labels referred to the buildings’ wall material and were chosen to be:
 1. Concrete
