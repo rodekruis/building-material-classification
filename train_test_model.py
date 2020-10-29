@@ -2,7 +2,7 @@
 train and test classifier
 """
 
-import plac
+import click
 from keras.applications.resnet50 import ResNet50, preprocess_input
 from keras.layers import GlobalAveragePooling2D
 from PIL import ImageFile
@@ -19,14 +19,13 @@ HEIGHT = 224
 WIDTH = 224
 
 
-@plac.annotations(
-    input_images_dir="input data directory: images separated by train/validation/test and label",
-    batch_size="number of images per batch",
-    num_epochs="number of training epochs",
-    learning_rate="learning rate of the optimizer",
-    save_plot_training="save plots of accuracy and loss vs training epochs"
-)
-def main(input_images_dir='data', batch_size=8, num_epochs=100, learning_rate=1e-4, save_plot_training=False):
+@click.command()
+@click.option('--input_images_dir', default='data', help='input')
+@click.option('--batch_size', default=8, help='number of images per batch')
+@click.option('--num_epochs', default=100, help='number of training epochs')
+@click.option('--learning_rate', default=1e-4, help='learning rate of the optimizer')
+@click.option('--save_plot_training', default=False, help='save plots of accuracy and loss vs training epochs')
+def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_training):
 
     # 1. PREPARE INPUT DATA
 
@@ -91,15 +90,15 @@ def main(input_images_dir='data', batch_size=8, num_epochs=100, learning_rate=1e
     # checkpoint = ModelCheckpoint(filepath, monitor=["acc"], verbose=1, mode='max')
     # callbacks_list = [checkpoint]
 
-    history = finetune_model.fit_generator(train_generator,
-                                           epochs=num_epochs,
-                                           workers=1,
-                                           steps_per_epoch=train_generator.samples // batch_size,
-                                           validation_data=validation_generator,
-                                           validation_steps=validation_generator.samples // batch_size,
-                                           shuffle=False,
-                                           # callbacks=callbacks_list,
-                                           use_multiprocessing=False)
+    history = finetune_model.fit(train_generator,
+                                   epochs=num_epochs,
+                                   workers=1,
+                                   steps_per_epoch=train_generator.samples // batch_size,
+                                   validation_data=validation_generator,
+                                   validation_steps=validation_generator.samples // batch_size,
+                                   shuffle=False,
+                                   # callbacks=callbacks_list,
+                                   use_multiprocessing=False)
     # plot training history
     if save_plot_training:
         plot_training(history)
@@ -157,4 +156,4 @@ def plot_training(history):
 
 
 if __name__ == '__main__':
-    plac.call(main)
+    main()
