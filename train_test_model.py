@@ -38,7 +38,7 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
     # generate batches of training data (w/ augmentation)
     train_datagen = ImageDataGenerator(
           preprocessing_function=preprocess_input,
-          rotation_range=30,
+          rotation_range=15,
           horizontal_flip=True
         )
     train_generator = train_datagen.flow_from_directory(TRAIN_DIR,
@@ -73,13 +73,14 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
 
     # model hyperparameters
     nodes_per_layer = [64]
-    dropout = 0.
+    dropout = 0.2
 
     # build model
     finetune_model = build_finetune_model(base_model,
                                           dropout=dropout,
                                           nodes_per_layer=nodes_per_layer,
                                           num_classes=len(class_list))
+    print(finetune_model.summary())
 
     # 3. TRAIN MODEL
 
