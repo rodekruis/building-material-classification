@@ -3,7 +3,8 @@ train and test classifier
 """
 
 import click
-from keras.applications.resnet50 import ResNet50, preprocess_input
+# from keras.applications.resnet50 import ResNet50, preprocess_input
+from keras.applications.xception import Xception, preprocess_input
 from keras.layers import GlobalAveragePooling2D
 from PIL import ImageFile
 from keras.optimizers import SGD, Adam
@@ -22,7 +23,7 @@ WIDTH = 224
 @click.command()
 @click.option('--input_images_dir', default='data', help='input')
 @click.option('--batch_size', default=8, help='number of images per batch')
-@click.option('--num_epochs', default=100, help='number of training epochs')
+@click.option('--num_epochs', default=15, help='number of training epochs')
 @click.option('--learning_rate', default=1e-4, help='learning rate of the optimizer')
 @click.option('--save_plot_training', default=False, help='save plots of accuracy and loss vs training epochs')
 def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_training):
@@ -64,7 +65,7 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
     # 2. BUILD MODEL
 
     # load ResNet50 pre-trained model
-    base_model = ResNet50(weights='imagenet',
+    base_model = Xception(weights='imagenet',
                           include_top=False,
                           input_shape=(HEIGHT, WIDTH, 3))
     # freeze bottom layer (not re-trainable)
