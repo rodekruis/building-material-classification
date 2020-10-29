@@ -33,7 +33,7 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
     TRAIN_DIR = input_images_dir+"/train"
     VALID_DIR = input_images_dir+"/validation"
     TEST_DIR = input_images_dir + "/test"
-    class_list = ["bricks", "concrete"]
+    class_list = ["bricks", "concrete", "metal", "thatch"]
 
     # generate batches of training data (w/ augmentation)
     train_datagen = ImageDataGenerator(
@@ -90,15 +90,15 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
     # checkpoint = ModelCheckpoint(filepath, monitor=["acc"], verbose=1, mode='max')
     # callbacks_list = [checkpoint]
 
-    history = finetune_model.fit(train_generator,
-                                   epochs=num_epochs,
-                                   workers=1,
-                                   steps_per_epoch=train_generator.samples // batch_size,
-                                   validation_data=validation_generator,
-                                   validation_steps=validation_generator.samples // batch_size,
-                                   shuffle=False,
-                                   # callbacks=callbacks_list,
-                                   use_multiprocessing=False)
+    history = finetune_model.fit_generator(train_generator,
+                                           epochs=num_epochs,
+                                           workers=1,
+                                           steps_per_epoch=train_generator.samples // batch_size,
+                                           validation_data=validation_generator,
+                                           validation_steps=validation_generator.samples // batch_size,
+                                           shuffle=False,
+                                           # callbacks=callbacks_list,
+                                           use_multiprocessing=False)
     # plot training history
     if save_plot_training:
         plot_training(history)
