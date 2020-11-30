@@ -4,6 +4,7 @@ train and test classifier
 
 import os
 import click
+import pandas as pd
 from keras.applications.resnet50 import ResNet50, preprocess_input
 from keras.layers import GlobalAveragePooling2D
 from PIL import ImageFile
@@ -50,7 +51,9 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
         )
     train_generator = train_datagen.flow_from_directory(TRAIN_DIR,
                                                         target_size=(HEIGHT, WIDTH),
-                                                        batch_size=batch_size)
+                                                        batch_size=batch_size,
+                                                        interpolation='hamming',
+                                                        shuffle=False)
 
     # generate batches of validation data (w/o augmentation)
     validation_datagen = ImageDataGenerator(
@@ -58,7 +61,9 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
         )
     validation_generator = validation_datagen.flow_from_directory(VALID_DIR,
                                                         target_size=(HEIGHT, WIDTH),
-                                                        batch_size=batch_size)
+                                                        batch_size=batch_size,
+                                                        interpolation='hamming',
+                                                        shuffle=False)
 
     # generate batches of test data (w/o augmentation)
     test_datagen = ImageDataGenerator(
@@ -66,7 +71,9 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
         )
     test_generator = test_datagen.flow_from_directory(TEST_DIR,
                                                       target_size=(HEIGHT, WIDTH),
-                                                      batch_size=batch_size)
+                                                      batch_size=batch_size,
+                                                      interpolation='hamming',
+                                                      shuffle=False)
 
     # 2. BUILD MODEL
 
@@ -116,7 +123,9 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
                                     steps=test_generator.samples // batch_size + 1,
                                     workers=6,
                                     use_multiprocessing=False)
-    print(Y_pred)
+    df = pd.DataFrame(data=Y_pred, columns=class_list)
+    df.to_csv(f'{RUN_DIR}/test_predict.csv')
+
     y_pred = np.argmax(Y_pred, axis=1)
     print('Confusion Matrix')
     print(confusion_matrix(test_generator.classes, y_pred))
@@ -133,10 +142,12 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
             preprocessing_function=preprocess_input
         )
         inference_generator = test_datagen.flow_from_directory(INFERENCE_DIR,
-                                                          target_size=(HEIGHT, WIDTH),
-                                                          batch_size=batch_size)
+                                                               target_size=(HEIGHT, WIDTH),
+                                                               batch_size=batch_size,
+                                                               interpolation='hamming',
+                                                               shuffle=False)
         Y_pred = finetune_model.predict(inference_generator,
-                                        steps=test_generator.samples // batch_size + 1,
+                                        steps=inference_generator.samples // batch_size + 1,
                                         workers=6,
                                         use_multiprocessing=False)
         # save results
