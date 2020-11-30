@@ -157,6 +157,7 @@ def main(input_images_dir, output_dir, batch_size, num_epochs, learning_rate, sa
         Y_pred = finetune_model.predict(inference_generator,
                                         steps=inference_generator.samples // batch_size + 1,
                                         workers=6,
+                                        verbose=1,
                                         use_multiprocessing=False)
         # save results
         df = pd.DataFrame(data=Y_pred, columns=class_list)
