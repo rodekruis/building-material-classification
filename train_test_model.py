@@ -22,7 +22,7 @@ WIDTH = 256
 
 
 @click.command()
-@click.option('--input_train', default='data', help='input for training')
+@click.option('--input_images_dir', default='data', help='input')
 @click.option('--batch_size', default=8, help='number of images per batch')
 @click.option('--num_epochs', default=15, help='number of training epochs')
 @click.option('--learning_rate', default=1e-4, help='learning rate of the optimizer')
