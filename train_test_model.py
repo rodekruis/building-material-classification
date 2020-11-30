@@ -101,7 +101,7 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
     class_weight = {}
     ntot = 0
     for class_ in class_list:
-        ntot += len(os.listdir(os.path.join(TRAIN_DIR, class_))
+        ntot += len(os.listdir(os.path.join(TRAIN_DIR, class_)))
     for nclass_, class_ in enumerate(class_list):
         class_weight[nclass_] = ntot / len(os.listdir(os.path.join(TRAIN_DIR, class_)))
     print('Setting class weights:', class_weight)
