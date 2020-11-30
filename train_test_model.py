@@ -3,8 +3,7 @@ train and test classifier
 """
 
 import click
-# from keras.applications.resnet50 import ResNet50, preprocess_input
-from keras.applications.xception import Xception, preprocess_input
+from keras.applications.resnet50 import ResNet50, preprocess_input
 from keras.layers import GlobalAveragePooling2D
 from PIL import ImageFile
 from keras.optimizers import SGD, Adam
@@ -65,7 +64,7 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
     # 2. BUILD MODEL
 
     # load ResNet50 pre-trained model
-    base_model = Xception(weights='imagenet',
+    base_model = ResNet50(weights='imagenet',
                           include_top=False,
                           input_shape=(HEIGHT, WIDTH, 3))
     # freeze bottom layer (not re-trainable)
