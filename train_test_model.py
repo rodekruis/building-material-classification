@@ -32,8 +32,7 @@ WIDTH = 256
 def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_training, inference):
 
     RUN_DIR = f'runs/run_ep{15}_bs{batch_size}_lr{learning_rate}_'+ datetime.now().strftime("%m%d%Y_%H%M%S")
-    if not os.path.exists:
-        os.makedirs(RUN_DIR, exist_ok=True)
+    os.makedirs(RUN_DIR, exist_ok=True)
 
     # 1. PREPARE INPUT DATA
 
