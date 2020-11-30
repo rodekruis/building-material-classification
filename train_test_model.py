@@ -97,22 +97,29 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
 
     # 3. TRAIN MODEL
 
-    optimizer = Adam(lr=learning_rate)
-    finetune_model.compile(optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+    # initialize class weights (n_samples/n_samples_class)
+    class_weight = {}
+    ntot = 0
+    for class_ in class_list:
+        ntot += os.listdir(os.path.join(TRAIN_DIR, class_))
+    for nclass_, class_ in enumerate(class_list):
+        class_weight[nclass_] = ntot / os.listdir(os.path.join(TRAIN_DIR, class_))
+    print('Setting class weights:', class_weight)
 
-    # filepath="./checkpoints/" + "ResNet50" + "_model_weights.h5"
-    # checkpoint = ModelCheckpoint(filepath, monitor=["acc"], verbose=1, mode='max')
-    # callbacks_list = [checkpoint]
+    optimizer = Adam(lr=learning_rate)
+    finetune_model.compile(optimizer, loss='categorical_crossentropy', metrics=['accuracy'],
+                           weighted_metrics=['accuracy'])
 
     history = finetune_model.fit(train_generator,
-                                   epochs=num_epochs,
-                                   workers=6,
-                                   steps_per_epoch=train_generator.samples // batch_size,
-                                   validation_data=validation_generator,
-                                   validation_steps=validation_generator.samples // batch_size,
-                                   shuffle=False,
-                                   # callbacks=callbacks_list,
-                                   use_multiprocessing=False)
+                                 epochs=num_epochs,
+                                 workers=6,
+                                 steps_per_epoch=train_generator.samples // batch_size,
+                                 validation_data=validation_generator,
+                                 validation_steps=validation_generator.samples // batch_size,
+                                 shuffle=False,
+                                 class_weight=class_weight,
+                                 # callbacks=callbacks_list,
+                                 use_multiprocessing=False)
     # plot training history
     if save_plot_training:
         plot_training(history, f'{RUN_DIR}/plots')
