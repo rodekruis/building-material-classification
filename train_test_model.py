@@ -126,19 +126,19 @@ def main(input_images_dir, output_dir, batch_size, num_epochs, learning_rate, sa
         plot_training(history, f'{RUN_DIR}/plots')
 
     # 4. TEST MODEL
-    Y_pred = finetune_model.predict(test_generator,
-                                    steps=test_generator.samples // batch_size + 1,
-                                    workers=6,
-                                    use_multiprocessing=False)
+    # Y_pred = finetune_model.predict(test_generator,
+    #                                 steps=test_generator.samples // batch_size + 1,
+    #                                 workers=6,
+    #                                 use_multiprocessing=False)
     # df = pd.DataFrame(data=Y_pred, columns=class_list)
     # df['name'] = test_generator.filenames
     # df.to_csv(f'{RUN_DIR}/test_predict.csv')
-
-    y_pred = np.argmax(Y_pred, axis=1)
-    # print('Confusion Matrix')
-    # print(confusion_matrix(test_generator.classes, y_pred))
-    print('Classification Report')
-    print(classification_report(test_generator.classes, y_pred, target_names=class_list))
+    #
+    # y_pred = np.argmax(Y_pred, axis=1)
+    # # print('Confusion Matrix')
+    # # print(confusion_matrix(test_generator.classes, y_pred))
+    # print('Classification Report')
+    # print(classification_report(test_generator.classes, y_pred, target_names=class_list))
 
     # 5. SAVE MODEL
     finetune_model.save(f'{RUN_DIR}/model')
