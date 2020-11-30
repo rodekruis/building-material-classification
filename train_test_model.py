@@ -18,8 +18,8 @@ import numpy as np
 from datetime import datetime
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-HEIGHT = 256
-WIDTH = 256
+HEIGHT = 224
+WIDTH = 224
 
 
 @click.command()
