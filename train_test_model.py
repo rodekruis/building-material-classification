@@ -123,6 +123,7 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
                                     workers=6,
                                     use_multiprocessing=False)
     df = pd.DataFrame(data=Y_pred, columns=class_list)
+    df['name'] = test_generator.filenames
     df.to_csv(f'{RUN_DIR}/test_predict.csv')
 
     y_pred = np.argmax(Y_pred, axis=1)
