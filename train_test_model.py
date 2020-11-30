@@ -24,14 +24,15 @@ WIDTH = 256
 
 @click.command()
 @click.option('--input_images_dir', default='data', help='input')
+@click.option('--output_dir', default='runs', help='output')
 @click.option('--batch_size', default=8, help='number of images per batch')
 @click.option('--num_epochs', default=15, help='number of training epochs')
 @click.option('--learning_rate', default=1e-4, help='learning rate of the optimizer')
 @click.option('--save_plot_training', default=False, help='save plots of accuracy and loss vs training epochs')
 @click.option('--inference', default=False, help='do inference')
-def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_training, inference):
+def main(input_images_dir, output_dir, batch_size, num_epochs, learning_rate, save_plot_training, inference):
 
-    RUN_DIR = f'runs/run_ep{15}_bs{batch_size}_lr{learning_rate}_'+ datetime.now().strftime("%m%d%Y_%H%M%S")
+    RUN_DIR = os.path.join(output_dir, f'run_ep{15}_bs{batch_size}_lr{learning_rate}_'+ datetime.now().strftime("%m%d%Y_%H%M%S"))
     os.makedirs(RUN_DIR, exist_ok=True)
 
     # 1. PREPARE INPUT DATA
@@ -132,8 +133,6 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
     df = pd.DataFrame(data=Y_pred, columns=class_list)
     df['name'] = test_generator.filenames
     df.to_csv(f'{RUN_DIR}/test_predict.csv')
-    print('Predictions')
-    print(df.head())
 
     y_pred = np.argmax(Y_pred, axis=1)
     # print('Confusion Matrix')
@@ -160,7 +159,9 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
                                         workers=6,
                                         use_multiprocessing=False)
         # save results
-        # Y_pred.save(f'{RUN_DIR}/inference/')
+        df = pd.DataFrame(data=Y_pred, columns=class_list)
+        df['name'] = inference_generator.filenames
+        df.to_csv(f'{RUN_DIR}/inference_predict.csv')
 
 
 def build_finetune_model(base_model, dropout, nodes_per_layer, num_classes):
