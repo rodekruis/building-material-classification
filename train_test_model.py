@@ -13,19 +13,23 @@ from keras.layers import Dense, Activation, Flatten, Dropout
 from keras.models import Sequential, Model
 from sklearn.metrics import classification_report, confusion_matrix
 import numpy as np
+from datetime import datetime
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-HEIGHT = 224
-WIDTH = 224
+HEIGHT = 256
+WIDTH = 256
 
 
 @click.command()
-@click.option('--input_images_dir', default='data', help='input')
+@click.option('--input_train', default='data', help='input for training')
 @click.option('--batch_size', default=8, help='number of images per batch')
 @click.option('--num_epochs', default=15, help='number of training epochs')
 @click.option('--learning_rate', default=1e-4, help='learning rate of the optimizer')
 @click.option('--save_plot_training', default=False, help='save plots of accuracy and loss vs training epochs')
-def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_training):
+@click.option('--inference', default=False, help='do inference')
+def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_training, inference):
+
+    RUN_DIR = f'runs/run_ep{15}_bs{batch_size}_lr{learning_rate}_'+ datetime.now().strftime("%m%d%Y_%H%M%S")
 
     # 1. PREPARE INPUT DATA
 
@@ -37,9 +41,9 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
 
     # generate batches of training data (w/ augmentation)
     train_datagen = ImageDataGenerator(
-          preprocessing_function=preprocess_input,
-          rotation_range=15,
-          horizontal_flip=True
+        preprocessing_function=preprocess_input,
+        rotation_range=20,
+        horizontal_flip=True
         )
     train_generator = train_datagen.flow_from_directory(TRAIN_DIR,
                                                         target_size=(HEIGHT, WIDTH),
@@ -91,30 +95,49 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
     # checkpoint = ModelCheckpoint(filepath, monitor=["acc"], verbose=1, mode='max')
     # callbacks_list = [checkpoint]
 
-    history = finetune_model.fit_generator(train_generator,
-                                           epochs=num_epochs,
-                                           workers=1,
-                                           steps_per_epoch=train_generator.samples // batch_size,
-                                           validation_data=validation_generator,
-                                           validation_steps=validation_generator.samples // batch_size,
-                                           shuffle=False,
-                                           # callbacks=callbacks_list,
-                                           use_multiprocessing=False)
+    history = finetune_model.fit(train_generator,
+                                   epochs=num_epochs,
+                                   workers=6,
+                                   steps_per_epoch=train_generator.samples // batch_size,
+                                   validation_data=validation_generator,
+                                   validation_steps=validation_generator.samples // batch_size,
+                                   shuffle=False,
+                                   # callbacks=callbacks_list,
+                                   use_multiprocessing=False)
     # plot training history
     if save_plot_training:
-        plot_training(history)
+        plot_training(history, f'{RUN_DIR}/plots')
 
     # 4. TEST MODEL
-
-    Y_pred = finetune_model.predict_generator(test_generator,
-                                              steps=test_generator.samples // batch_size + 1,
-                                              workers=1,
-                                              use_multiprocessing=False)
+    Y_pred = finetune_model.predict(test_generator,
+                                    steps=test_generator.samples // batch_size + 1,
+                                    workers=6,
+                                    use_multiprocessing=False)
+    print(Y_pred)
     y_pred = np.argmax(Y_pred, axis=1)
     print('Confusion Matrix')
     print(confusion_matrix(test_generator.classes, y_pred))
     print('Classification Report')
     print(classification_report(test_generator.classes, y_pred, target_names=class_list))
+
+    # 5. SAVE MODEL
+    finetune_model.save(f'{RUN_DIR}/model')
+
+    # 6. INFERENCE ON ALL DATA
+    if inference:
+        INFERENCE_DIR = input_images_dir + "/inference"
+        inference_datagen = ImageDataGenerator(
+            preprocessing_function=preprocess_input
+        )
+        inference_generator = test_datagen.flow_from_directory(INFERENCE_DIR,
+                                                          target_size=(HEIGHT, WIDTH),
+                                                          batch_size=batch_size)
+        Y_pred = finetune_model.predict(inference_generator,
+                                        steps=test_generator.samples // batch_size + 1,
+                                        workers=6,
+                                        use_multiprocessing=False)
+        # save results
+        # Y_pred.save(f'{RUN_DIR}/inference/')
 
 
 def build_finetune_model(base_model, dropout, nodes_per_layer, num_classes):
@@ -135,7 +158,7 @@ def build_finetune_model(base_model, dropout, nodes_per_layer, num_classes):
     return finetune_model
 
 
-def plot_training(history):
+def plot_training(history, savedir):
     """ Plot the train / validation accuracy and loss """
 
     acc = history.history['acc']
@@ -147,13 +170,13 @@ def plot_training(history):
     plt.plot(epochs, acc, 'r.')
     plt.plot(epochs, val_acc, 'r')
     plt.title('Training and validation accuracy')
-    plt.savefig('acc_vs_epochs.png')
+    plt.savefig(f'{savedir}/acc_vs_epochs.png')
 
     plt.figure()
     plt.plot(epochs, loss, 'r.')
     plt.plot(epochs, val_loss, 'r-')
     plt.title('Training and validation loss')
-    plt.savefig('loss_vs_epochs.png')
+    plt.savefig(f'{savedir}/loss_vs_epochs.png')
 
 
 if __name__ == '__main__':
