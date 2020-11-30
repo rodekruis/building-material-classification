@@ -125,10 +125,12 @@ def main(input_images_dir, batch_size, num_epochs, learning_rate, save_plot_trai
     df = pd.DataFrame(data=Y_pred, columns=class_list)
     df['name'] = test_generator.filenames
     df.to_csv(f'{RUN_DIR}/test_predict.csv')
+    print('Predictions')
+    print(df.head())
 
     y_pred = np.argmax(Y_pred, axis=1)
-    print('Confusion Matrix')
-    print(confusion_matrix(test_generator.classes, y_pred))
+    # print('Confusion Matrix')
+    # print(confusion_matrix(test_generator.classes, y_pred))
     print('Classification Report')
     print(classification_report(test_generator.classes, y_pred, target_names=class_list))
 
