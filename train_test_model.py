@@ -145,15 +145,17 @@ def main(input_images_dir, output_dir, batch_size, num_epochs, learning_rate, sa
 
     # 6. INFERENCE ON ALL DATA
     if inference:
+        print('STARTING INFERENCE')
         INFERENCE_DIR = input_images_dir + "/inference"
         inference_datagen = ImageDataGenerator(
             preprocessing_function=preprocess_input
         )
-        inference_generator = test_datagen.flow_from_directory(INFERENCE_DIR,
-                                                               target_size=(HEIGHT, WIDTH),
-                                                               batch_size=batch_size,
-                                                               interpolation='hamming',
-                                                               shuffle=False)
+        inference_generator = inference_datagen.flow_from_directory(INFERENCE_DIR,
+                                                                    target_size=(HEIGHT, WIDTH),
+                                                                    batch_size=batch_size,
+                                                                    interpolation='hamming',
+                                                                    class_mode=None,
+                                                                    shuffle=False)
         Y_pred = finetune_model.predict(inference_generator,
                                         steps=inference_generator.samples // batch_size + 1,
                                         workers=6,
