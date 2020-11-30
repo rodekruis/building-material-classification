@@ -130,9 +130,9 @@ def main(input_images_dir, output_dir, batch_size, num_epochs, learning_rate, sa
                                     steps=test_generator.samples // batch_size + 1,
                                     workers=6,
                                     use_multiprocessing=False)
-    df = pd.DataFrame(data=Y_pred, columns=class_list)
-    df['name'] = test_generator.filenames
-    df.to_csv(f'{RUN_DIR}/test_predict.csv')
+    # df = pd.DataFrame(data=Y_pred, columns=class_list)
+    # df['name'] = test_generator.filenames
+    # df.to_csv(f'{RUN_DIR}/test_predict.csv')
 
     y_pred = np.argmax(Y_pred, axis=1)
     # print('Confusion Matrix')
